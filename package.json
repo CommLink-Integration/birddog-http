@@ -21,7 +21,8 @@
     "url": "https://github.com/CommLink-Integration/birddog-http/issues"
   },
   "homepage": "https://github.com/CommLink-Integration/birddog-http#readme",
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "jsdoc-to-markdown": "^7.1.1"
   }
 }
