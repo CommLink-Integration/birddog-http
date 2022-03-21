@@ -1,6 +1,6 @@
 {
   "name": "birddog-http",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Implementation of v2.0 of the BirdDog HTTP API",
   "main": "src/index.js",
   "scripts": {
