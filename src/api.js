@@ -4,7 +4,7 @@ const http = require('http');
     This implements v2.0.0 of the BirdDog API as described by https://bird-dog.tv/SW/API/index.html
     Please note that you need to update all devices to the LTS firmware
  */
-const DEBUG = true;
+const DEBUG = false;
 
 const v1 = {
     encodeSettings: '/enc-settings',
