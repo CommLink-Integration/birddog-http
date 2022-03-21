@@ -46,13 +46,9 @@ async function getNDIFinder() {
     console.log('getNDIDiscoveryServer', await tryCatchWrapper('getNDIDiscoveryServer'));
 }
 
-async function testNDIFinder() {
-    await getNDIFinder();
-}
-
 async function testCalls() {
     await testBasicInfo();
-    await testNDIFinder();
+    await getNDIFinder();
     switch (bd.family) {
         case 'camera':
             await getCameraSettings();
@@ -74,24 +70,11 @@ async function testCalls() {
 }
 
 (async () => {
-    // Flex In
-    bd = await new BirdDog({ host: '172.16.10.237', debug: true }); // Flex In
+    bd = await new BirdDog({ host: '172.16.10.237', debug: true });
     await testCalls();
 
-    // P200
-    bd = await new BirdDog({ host: '172.16.4.185', debug: true }); // P200
-    await testCalls();
-
-    // Flex Out
-    bd = await new BirdDog({ host: '172.16.10.16', debug: true }); // Flex Out
-    await testCalls();
-
-    // P100 old firmware
-    bd = await new BirdDog({ host: '172.16.4.157', debug: true }); // P100 old firmware
-    await testCalls();
-
-    // Mini
-    bd = await new BirdDog({ host: '172.16.4.203', model: 'Mini', debug: true }); // Mini
+    // Sets the model to BirdDog Mini
+    bd = await new BirdDog({ host: '172.16.4.203', model: 'Mini', debug: true });
     console.log('encodeSettings', await bd.v1Get(v1.encodeSettings));
     await testCalls();
 })();
