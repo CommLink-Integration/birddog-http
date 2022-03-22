@@ -1,6 +1,32 @@
 const { get, post, endpoints } = require('../api.js');
 const Encoder = require('./encoder.js');
 const { truncate } = require('../helpers.js');
+const dgram = require('dgram');
+const { Buffer } = require('buffer');
+
+const viscaPort = 52381;
+
+const viscaCommands = {
+    pantilt: {
+        header: (speed) => [0x81, 0x01, 0x06, 0x01, speed.pan, speed.tilt],
+        upleft: [0x01, 0x01, 0xFF],
+        upright: [0x02, 0x01, 0xFF],
+        downleft: [0x01, 0x02, 0xFF],
+        downright: [0x02, 0x02, 0xFF],
+        up: [0x03, 0x01, 0xFF],
+        down: [0x03, 0x02, 0xFF],
+        left: [0x01, 0x03, 0xFF],
+        right: [0x02, 0x03, 0xFF],
+        stop: [0x03, 0x03, 0xFF]
+    },
+    zoom: {
+        header: [0x81, 0x01, 0x04, 0x07],
+        stop: [0x00, 0xFF],
+        in: (speed) => [0x20+speed, 0xFF],
+        out: (speed) => [0x30+speed, 0xFF],
+    }
+
+}
 
 /**
  * Implements the portions of the API that all cameras should respond to
@@ -10,6 +36,7 @@ module.exports = class Camera extends Encoder {
         super({ host, debug });
         this._debug = debug;
         this.host = host;
+        this.viscaSock = dgram.createSocket('udp4');
         this.model = this.constructor.name; // gets the child class name, i.e. P100, P200, PF120, etc.
     }
 
@@ -149,5 +176,31 @@ module.exports = class Camera extends Encoder {
      */
     async savePreset(preset) {
         return await post(this.host, endpoints.savePreset, { Preset: `Preset-${preset}` });
+    }
+
+    async pantilt(direction, speed = {}) {
+        let cmdHeader = viscaCommands.pantilt.header({ pan: speed.pan || 0x05, tilt: speed.tilt || 0x05 });
+        if (direction in viscaCommands.pantilt)
+            this.viscaSend(cmdHeader.concat(viscaCommands.pantilt[direction]))
+    }
+
+    async zoom(direction, speed) {
+        let cmdHeader = viscaCommands.zoom.header;
+        let cmd;
+        if (direction in viscaCommands.zoom) {
+            if (direction == 'stop') cmd = viscaCommands.zoom[direction]
+            else cmd = viscaCommands.zoom[direction](Number(speed) || 0x03)
+
+            this.viscaSend(cmdHeader.concat(cmd));
+        }
+    }
+
+    viscaSend(data) {
+        const header = [0x01, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 0x00]
+        const packet = Buffer.from(header.concat(data));
+        // console.log(packet)
+        this.viscaSock.send(packet, viscaPort, this.host, (err) => {
+            if (err) console.log(err);
+        });
     }
 }
