@@ -1,4 +1,4 @@
-const { get, post, endpoints } = require('../api.js');
+const { get, post, v2: endpoints } = require('../api/index.js');
 const BaseModel = require('./base.js');
 
 /**

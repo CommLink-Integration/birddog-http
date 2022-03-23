@@ -1,4 +1,5 @@
-const { get, post, endpoints } = require('../api.js');
+const { get, post, v2: endpoints } = require('../api/index.js');
+
 /**
  * Implements the portions of the API that every BirdDog device should respond to
  */

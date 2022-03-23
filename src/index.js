@@ -30,6 +30,6 @@ class BirdDog {
     }
 }
 
-const { v1 } = require('./api.js');
+const { v1 } = require('./api/index.js');
 
 module.exports = { BirdDog, v1 };

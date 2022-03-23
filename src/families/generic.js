@@ -1,4 +1,5 @@
-const { discover } = require('../api.js');
+const { discover } = require('../api/index.js');
+
 const Models = require('../models/index.js');
 
 /**
