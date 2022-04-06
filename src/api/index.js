@@ -44,7 +44,7 @@ function _request(host, resource, method, params) {
                             `Bad API request to http://${host}:${port}${resource}, HTTP response code: ${res.statusCode}`
                         )
                     );
-                } else resolve(data.trim());
+                } else resolve(data ? data.trim() : data);
             });
         });
 
