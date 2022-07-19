@@ -49,7 +49,7 @@ function _request(host, resource, method, params) {
         });
 
         req.on('error', (e) => {
-            console.error(`problem with request: ${e.message}`);
+            if (DEBUG) console.error(`problem with request: ${e.message}`);
             reject(e);
         });
 
